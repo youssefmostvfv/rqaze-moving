@@ -1,32 +1,39 @@
 /**
  * ركاز لنقل العفش - Premium Furniture Moving Services Website
- * Main JavaScript File
+ * ملف الجافاسكريبت الرئيسي (Main JavaScript File)
+ * يحتوي هذا الملف على جميع الوظائف التفاعلية للموقع مثل قائمة التنقل، الأسئلة الشائعة، والحركات عند التمرير.
  */
 
+// يتم تنفيذ هذا الكود بمجرد أن يتم تحميل الهيكل الأساسي لصفحة HTML بالكامل
 document.addEventListener('DOMContentLoaded', function () {
-  // Initialize all components
-  initNavbar();
-  initFAQ();
-  initScrollAnimations();
-  initSmoothScroll();
-  initNavbarScroll();
-  initCounters();
+  // استدعاء (تشغيل) جميع الوظائف والمكونات الأساسية في الموقع
+  initNavbar();           // تشغيل قائمة التنقل الخاصة بالجوال
+  initFAQ();              // تشغيل قسم الأسئلة الشائعة (فتح وإغلاق الإجابات)
+  initScrollAnimations(); // تشغيل تأثيرات ظهور العناصر عند التمرير للأسفل
+  initSmoothScroll();     // تشغيل التمرير الناعم عند الضغط على الروابط
+  initNavbarScroll();     // تشغيل تأثير القائمة العلوية عند التمرير (إضافة خلفية)
+  initCounters();         // تشغيل العدادات الرقمية المتحركة (مثل عدد العملاء)
 });
 
 /**
- * Navbar Mobile Toggle
+ * وظيفة قائمة التنقل للهواتف المحمولة (Navbar Mobile Toggle)
+ * تقوم بفتح وإغلاق القائمة الجانبية عند الضغط على زر القائمة (أيقونة الهمبرجر) في الشاشات الصغيرة
  */
 function initNavbar() {
+  // البحث عن زر القائمة والقائمة نفسها في الصفحة
   const toggle = document.querySelector('.navbar__toggle');
   const menu = document.querySelector('.navbar__menu');
 
+  // التأكد من وجود الزر والقائمة قبل إضافة الأحداث لتجنب الأخطاء
   if (toggle && menu) {
+    // إضافة حدث عند النقر على زر القائمة
     toggle.addEventListener('click', function () {
+      // إضافة أو إزالة كلاس الحيوية (active) لفتح وإغلاق القائمة والزر
       menu.classList.toggle('active');
       toggle.classList.toggle('active');
     });
 
-    // Close menu when clicking on a link
+    // إغلاق القائمة تلقائياً بمجرد النقر على أي رابط بداخلها
     const links = menu.querySelectorAll('.navbar__link');
     links.forEach(link => {
       link.addEventListener('click', function () {
@@ -38,23 +45,28 @@ function initNavbar() {
 }
 
 /**
- * FAQ Accordion
+ * الأسئلة الشائعة (FAQ Accordion)
+ * وظيفة تتحكم في إظهار وإخفاء إجابة السؤال عند النقر عليه (مثل الأكورديون)
  */
 function initFAQ() {
+  // تحديد جميع الأسئلة الموجودة في الصفحة
   const faqItems = document.querySelectorAll('.faq__item');
 
+  // المرور على كل سؤال لإضافة حدث النقر
   faqItems.forEach(item => {
     const question = item.querySelector('.faq__question');
 
+    // عند النقر على السؤال
     question.addEventListener('click', function () {
+      // التحقق مما إذا كان السؤال المفتوح حالياً هو الذي تم النقر عليه
       const isActive = item.classList.contains('active');
 
-      // Close all items
+      // إغلاق جميع الأسئلة الأخرى أولاً لإبقاء سؤال واحد فقط مفتوح
       faqItems.forEach(faqItem => {
         faqItem.classList.remove('active');
       });
 
-      // Open clicked item if it wasn't active
+      // إذا لم يكن السؤال نشطاً بالفعل، قم بفتحه
       if (!isActive) {
         item.classList.add('active');
       }
@@ -63,50 +75,66 @@ function initFAQ() {
 }
 
 /**
- * Scroll Animations using Intersection Observer
+ * تأثيرات الظهور عند التمرير (Scroll Animations)
+ * تستخدم واجهة الـ Intersection Observer الحديثة لمراقبة متى يظهر العنصر على الشاشة
+ * لتطبيق حركة (أنيميشن) عليه بدلاً من إظهارها كلها مرة واحدة.
  */
 function initScrollAnimations() {
+  // جلب جميع العناصر التي تحتوي على كلاس الحركة 'animate-on-scroll'
   const animatedElements = document.querySelectorAll('.animate-on-scroll');
 
+  // إذا لم يتم العثور على أي عنصر يخضع للتحريك، توقف عن تنفيذ الكود
   if (animatedElements.length === 0) return;
 
+  // إعدادات المراقبة: 0.1 تعني متى ما ظهر 10% من العنصر في الشاشة، يتم تشغيل الحركة
   const observerOptions = {
     root: null,
     rootMargin: '0px',
     threshold: 0.1
   };
 
+  // إنشاء مراقب لتتبع العناصر
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
+      // إذا كان العنصر ظاهراً على الشاشة (في نطاق رؤية المستخدم)
       if (entry.isIntersecting) {
+        // يتم إضافة كلاس (animated) الذي يشغل الحركة في ملف CSS
         entry.target.classList.add('animated');
+        // بعد تشغيل الحركة، يتم إيقاف المراقبة على هذا العنصر لتخفيف العبء على المتصفح
         observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
+  // ربط جميع العناصر المختارة لتصبح تحت مراقبة هذه الوظيفة المؤتمتة
   animatedElements.forEach(element => {
     observer.observe(element);
   });
 }
 
 /**
- * Smooth Scroll for anchor links
+ * التمرير السلس (Smooth Scroll)
+ * وظيفة تجعل الصفحة تنتقل لأسفل أو لأعلى بنعومة عند النقر على روابط تشير إلى أجزاء في نفس الصفحة (بتبدأ بـ #)
  */
 function initSmoothScroll() {
+  // تحديد جميع الروابط التي تحتوي على علامة المربع (#)
   const anchorLinks = document.querySelectorAll('a[href^="#"]');
 
   anchorLinks.forEach(link => {
     link.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
+      // إذا كان الرابط فارغاً، فتوقف
       if (href === '#') return;
 
+      // تحديد الجزء (Section) المستهدف بناءً على الـ id الخاص به
       const target = document.querySelector(href);
       if (target) {
-        e.preventDefault();
+        e.preventDefault(); // منع السلوك الافتراضي للانتقال الفوري والمفاجئ
+        // حساب ارتفاع شريط التنقل العلوي الثابت وطرحه حتى لا يُغطي على عنوان القسم عند الوصول إليه
         const navbarHeight = document.querySelector('.navbar').offsetHeight;
         const targetPosition = target.offsetTop - navbarHeight;
 
+        // تنفيذ عملية التمرير الناعم إلى الموقع المستهدف المحدد
         window.scrollTo({
           top: targetPosition,
           behavior: 'smooth'
@@ -117,29 +145,35 @@ function initSmoothScroll() {
 }
 
 /**
- * Navbar scroll effect
+ * تأثير التمرير على القائمة العلوية (Navbar scroll effect)
+ * وظيفة تضيف تأثير بصري مثل تغيير الخلفية أو إضافة ظل لـ النافبار عند التنزيل في الصفحة.
  */
 function initNavbarScroll() {
   const navbar = document.querySelector('.navbar');
   if (!navbar) return;
 
+  // مراقبة أحداث تمرير (سكْرول) المستخدم
   window.addEventListener('scroll', function () {
+    // إذا نزل المستخدم للأسفل أكثر من 50 بكسل
     if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
+      navbar.classList.add('scrolled'); // إضافة كلاس يطبق تأثير الـ CSS الداكن/المتغير
     } else {
-      navbar.classList.remove('scrolled');
+      navbar.classList.remove('scrolled'); // إزالة التأثير عند العودة للأعلى
     }
   });
 }
 
 /**
- * Counter Animation
+ * تحريك العدادات الرقمية (Counter Animation)
+ * وظيفة لتحريك أرقام الإحصائيات تصاعدياً من 0 إلى الرقم النهائي بطريقة سلسة.
  */
 function initCounters() {
+  // تحديد جميع العناصر التي تحتوي على الإحصائيات
   const counters = document.querySelectorAll('.stat-card__number');
 
   if (counters.length === 0) return;
 
+  // إعدادات المراقبة لتشغيل العداد فقط عند وصول المستخدم لمكانه على الشاشة بنسبة 50%
   const observerOptions = {
     root: null,
     rootMargin: '0px',
@@ -148,18 +182,23 @@ function initCounters() {
 
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
+      // عند رؤية العداد في الشاشة
       if (entry.isIntersecting) {
         const counter = entry.target;
         const text = counter.textContent;
 
-        // Extract number from text (e.g., "+2000" -> 2000, "98%" -> 98)
+        // استخراج القيمة الرقمية من النص (على سبيل المثال: "+2000" تصبح 2000، و "98%" تصبح 98)
+        // هذا باستخدام التعابير النمطية (Regex) لاستخراج الأرقام والنقاط العشرية فقط
         const match = text.match(/[\d.]+/);
         if (match) {
-          const target = parseFloat(match[0]);
-          const suffix = text.replace(/[\d.]+/, '');
+          const target = parseFloat(match[0]); // تحويلها لقيمة رقمية يمكن التعامل معها
+          const suffix = text.replace(/[\d.]+/, ''); // استخراج العلامات المصاحبة (مثل % أو الزائد +) لوضعها بنهاية الرقم مجدداً
+
+          // البدء بتشغيل دالة التحريك وتمرير القيم لها
           animateCounter(counter, target, suffix);
         }
 
+        // إيقاف مراقبة هذا الرقم لعدم تشغيل الأنيميشن سوى مرة واحدة فقط
         observer.unobserve(counter);
       }
     });
@@ -170,23 +209,36 @@ function initCounters() {
   });
 }
 
+/**
+ * دالة تفصيلية لتشغيل حركة العد (Animating the numbers values)
+ * تقوم بحساب الخطوات والمدة لتصل للرقم النهائي بصرياً بسلاسة
+ */
 function animateCounter(element, target, suffix) {
-  const duration = 2000;
-  const start = 0;
+  const duration = 2000; // مدة الحركة كاملة بالملي ثانية (2 ثانية)
+  const start = 0; // الرقم المبدئي يبدأ من الصفر
+
+  // حساب المتبقي لكل تحديث لإطار الشاشة للوصول للهدف في المدة المحددة (duration / 16 لضمان انسيابية تعادل 60 إطار في الثانية)
   const increment = target / (duration / 16);
   let current = start;
 
+  // التحقق مما إذا كان الرقم المستهدف به كسر عشري (مثلاً 4.9 الخاصة بتقييم العملاء)
   const isDecimal = target % 1 !== 0;
 
+  // دالة متكررة لتحديث الرقم المعروض
   function updateCounter() {
-    current += increment;
+    current += increment; // إضافة جزء للرقم الحالي
+
+    // طالما أن الرقم الحالي أصغر من هدفنا (الرقم النهائي)
     if (current < target) {
+      // طباعة الرقم (مع مراعاة كسوره العشرية إن وجدت) وبجانبه السافكس
       element.textContent = (isDecimal ? current.toFixed(1) : Math.floor(current)) + suffix;
-      requestAnimationFrame(updateCounter);
+      requestAnimationFrame(updateCounter); // اطلب إطار حركي جديد للاستمرار بالعد
     } else {
+      // عند الانتهاء، سيتم التتويج بوضع الرقم النهائي بشكل ضامن لعدم تجاوزه للهدف
       element.textContent = target + suffix;
     }
   }
 
+  // بداية تشغيل التحديث
   updateCounter();
 }
