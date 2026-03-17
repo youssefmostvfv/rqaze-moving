@@ -576,6 +576,36 @@ button {
   margin-top: 8px;
 }
 
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .hero {
+    align-items: center;
+    padding-top: 120px;
+  }
+
+  .hero__content {
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .hero__buttons {
+    justify-content: center;
+  }
+
+  .hero__stats {
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 12px;
+  }
+
+  .hero__stat {
+    flex: 1 1 140px;
+    min-width: 120px;
+  }
+}
+
 .hero__scroll {
   position: absolute;
   bottom: 40px;
