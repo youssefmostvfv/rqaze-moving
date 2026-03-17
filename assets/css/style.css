@@ -594,7 +594,7 @@ button {
 
   .hero__stats {
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1rem;
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 12px;
@@ -2764,7 +2764,7 @@ button {
   }
 
   .hero__stats {
-    gap: 2rem;
+    gap: 5px;
   }
 
   .hero__stat-number {
