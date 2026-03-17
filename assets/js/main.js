@@ -1,5 +1,5 @@
 /**
- * ركاز لنقل العفش - Premium Furniture Moving Services Website
+ * ايرفو كول لخدمات التكييف - Premium Furniture Moving Services Website
  * ملف الجافاسكريبت الرئيسي (Main JavaScript File)
  * يحتوي هذا الملف على جميع الوظائف التفاعلية للموقع مثل قائمة التنقل، الأسئلة الشائعة، والحركات عند التمرير.
  */
@@ -242,3 +242,119 @@ function animateCounter(element, target, suffix) {
   // بداية تشغيل التحديث
   updateCounter();
 }
+
+/**
+ * مستكشف الأحياء (Neighborhood Explorer)
+ * وظيفة للتحكم في التبويبات والبحث داخل أحياء الرياض
+ */
+function initNeighborhoodExplorer() {
+  const tabs = document.querySelectorAll('.explorer-tab-btn');
+  const panes = document.querySelectorAll('.explorer-pane');
+  const searchInput = document.getElementById('nb-search');
+  const chips = document.querySelectorAll('.neighborhood-chip');
+  const emptyState = document.getElementById('search-not-found');
+
+  if (!tabs.length || !searchInput) return;
+
+  // 1. التحكم في التبويبات
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.getAttribute('data-pane');
+      
+      // إزالة الحالة النشطة من الجميع
+      tabs.forEach(t => t.classList.remove('active'));
+      panes.forEach(p => p.classList.remove('active'));
+      
+      // إضافة الحالة النشطة للتبويب والمحتوى المختار
+      tab.classList.add('active');
+      document.getElementById(target).classList.add('active');
+      
+      // مسح البحث عند تغيير التبويب (اختياري)
+      // searchInput.value = '';
+      // filterNeighborhoods('');
+    });
+  });
+
+  // 2. محرك البحث الذكي
+  searchInput.addEventListener('input', (e) => {
+    const term = e.target.value.trim().toLowerCase();
+    filterNeighborhoods(term);
+  });
+
+  function filterNeighborhoods(term) {
+    let hasResults = false;
+
+    if (term === '') {
+      // إعادة الحالة العادية
+      const activeTabPaneId = document.querySelector('.explorer-tab-btn.active').getAttribute('data-pane');
+      panes.forEach(p => p.style.display = ''); 
+      panes.forEach(p => p.classList.remove('active'));
+      document.getElementById(activeTabPaneId).classList.add('active');
+      chips.forEach(c => c.classList.remove('highlight'));
+      emptyState.style.display = 'none';
+      return;
+    }
+
+    // البحث في كل الأحياء
+    panes.forEach(pane => {
+      let paneHasMatch = false;
+      const paneChips = pane.querySelectorAll('.neighborhood-chip');
+      
+      paneChips.forEach(chip => {
+        if (chip.textContent.toLowerCase().includes(term)) {
+          chip.classList.add('highlight');
+          paneHasMatch = true;
+          hasResults = true;
+        } else {
+          chip.classList.remove('highlight');
+        }
+      });
+
+      // إظهار القسم الذي يحتوي على نتائج فقط أثناء البحث
+      if (paneHasMatch) {
+        pane.style.display = 'flex';
+        pane.classList.add('active');
+      } else {
+        pane.style.display = 'none';
+        pane.classList.remove('active');
+      }
+    });
+
+    emptyState.style.display = hasResults ? 'none' : 'block';
+  }
+}
+
+/**
+ * منصة التشغيل التفاعلية (Operational Hub)
+ */
+function initOperationalHub() {
+  const hubBtns = document.querySelectorAll('.hub-nav-btn');
+  const hubPanes = document.querySelectorAll('.hub-pane');
+
+  if (!hubBtns.length) return;
+
+  hubBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-hub');
+
+      // إزالة الحالة النشطة
+      hubBtns.forEach(b => b.classList.remove('active'));
+      hubPanes.forEach(p => p.classList.remove('active'));
+
+      // تفعيل العنصر المختار
+      btn.classList.add('active');
+      const targetPane = document.getElementById(target);
+      if (targetPane) {
+        targetPane.classList.add('active');
+      }
+    });
+  });
+}
+
+// تحديث الاستدعاء عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof initNeighborhoodExplorer === 'function') initNeighborhoodExplorer();
+  if (typeof initOperationalHub === 'function') initOperationalHub();
+});
+
+
